@@ -346,6 +346,20 @@ Value do_evaluate(const Position& pos) {
       int s = evaluate_space<WHITE>(pos, ei) - evaluate_space<BLACK>(pos, ei);
       score += apply_weight(s * ei.mi->space_weight(), Weights[Space]);
   }
+  
+  // If ahead, try to increase flexibility (keep pawns and exchange pieces)
+  int wp  = pos.count<PAWN>(WHITE);
+  int bp  = pos.count<PAWN>(BLACK);
+  int wm  = popcount<Full>(pos.pieces(WHITE)) - wp;
+  int bm  = popcount<Full>(pos.pieces(BLACK)) - bp;
+    
+  int whiteFlexibility = (6 * wp - 2 * bp - 12 * wm - 8 * bm) / 6;
+  int blackFlexibility = (6 * bp - 2 * wp - 12 * bm - 8 * wm) / 6;
+    
+  if (mg_value(score) > VALUE_DRAW)
+      score += make_score( whiteFlexibility / 2 - blackFlexibility , whiteFlexibility / 2 );
+  else if (mg_value(score) < VALUE_DRAW)
+      score -= make_score( blackFlexibility / 2 - whiteFlexibility , blackFlexibility / 2 );
 
   // Scale winning side if position is more drawish than it appears
   ScaleFactor sf = eg_value(score) > VALUE_DRAW ? ei.mi->scale_factor(pos, WHITE)
