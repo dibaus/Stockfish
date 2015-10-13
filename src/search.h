@@ -32,6 +32,9 @@ struct SplitPoint;
 
 namespace Search {
 
+//enum NodeType { Root, PV, NonPV };
+
+
 /// Stack struct keeps track of the information we need to remember from nodes
 /// shallower and deeper in the tree during the search. Each search thread has
 /// its own array of Stack objects, indexed by the current ply.
@@ -109,6 +112,9 @@ void init();
 void think();
 void reset();
 template<bool Root> uint64_t perft(Position& pos, Depth depth);
+
+Value debug_search(Position& pos, Value alpha, Value beta, Depth depth, bool cutNode);
+
 
 } // namespace Search
 

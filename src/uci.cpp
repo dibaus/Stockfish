@@ -28,6 +28,7 @@
 #include "thread.h"
 #include "timeman.h"
 #include "uci.h"
+#include "search.h"
 
 using namespace std;
 
@@ -203,6 +204,18 @@ void UCI::loop(int argc, char* argv[]) {
              << Options["Threads"] << " " << depth << " current perft";
 
           benchmark(pos, ss);
+      }
+      else if (token == "search")
+      {
+        int alpha,beta,depth;
+        bool cut_node;
+        is >> alpha;
+        is >> beta;
+        is >> depth;
+        is >> cut_node;
+        Search::reset();
+        Value value = Search::debug_search(pos,Value(alpha),Value(beta),Depth(depth),cut_node);
+        sync_cout << "value" << value << sync_endl;
       }
       else
           sync_cout << "Unknown command: " << cmd << sync_endl;

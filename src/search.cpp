@@ -221,6 +221,14 @@ uint64_t Search::perft(Position& pos, Depth depth) {
 template uint64_t Search::perft<true>(Position& pos, Depth depth);
 
 
+Value Search::debug_search(Position& pos, Value alpha, Value beta, Depth depth, bool cutNode) {
+  Stack stack[MAX_PLY+4], *ss = stack+2;
+  Value value = search<NonPV,false>(pos,ss,alpha,beta,depth,cutNode);
+  sync_cout << "info nodes " << pos.nodes_searched() << sync_endl;
+  return value;
+}
+
+
 /// Search::think() is the external interface to Stockfish's search, and is
 /// called by the main thread when the program receives the UCI 'go' command. It
 /// searches from RootPos and at the end prints the "bestmove" to output.
