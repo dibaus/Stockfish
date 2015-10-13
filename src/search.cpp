@@ -223,6 +223,8 @@ template uint64_t Search::perft<true>(Position& pos, Depth depth);
 
 Value Search::debug_search(Position& pos, Value alpha, Value beta, Depth depth, bool cutNode) {
   Stack stack[MAX_PLY+4], *ss = stack+2;
+  std::memset(ss-2, 0, 5 * sizeof(Stack));
+  TT.new_search();
   Value value = search<NonPV,false>(pos,ss,alpha,beta,depth,cutNode);
   sync_cout << "info nodes " << pos.nodes_searched() << sync_endl;
   return value;
